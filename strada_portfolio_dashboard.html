@@ -1,0 +1,1007 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Strada Portfolio Dashboard — December 2025</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --verde:    #1b7a6e;
+    --verde-dk: #134f47;
+    --verde-lt: #7ecfca;
+    --verde-xs: #d4f0ee;
+    --ink:      #162128;
+    --ink-mid:  #4a5f6b;
+    --ink-lt:   #8fa4ae;
+    --paper:    #f4f7f7;
+    --white:    #ffffff;
+    --rule:     #dce8e7;
+    --gold:     #e8a94a;
+    --gold-lt:  #fdf3e2;
+
+    --font-display: 'Instrument Serif', Georgia, serif;
+    --font-body:    'Plus Jakarta Sans', sans-serif;
+
+    --r-sm: 6px;
+    --r-md: 12px;
+    --r-lg: 20px;
+    --shadow: 0 2px 12px rgba(22,33,40,.07);
+    --shadow-lg: 0 8px 32px rgba(22,33,40,.11);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: var(--font-body);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── HEADER ─────────────────────────────────────── */
+  header {
+    background: var(--verde-dk);
+    padding: 0 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 68px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 16px rgba(0,0,0,.18);
+  }
+  .logo {
+    font-family: var(--font-display);
+    font-size: 28px;
+    color: var(--white);
+    letter-spacing: -0.5px;
+    font-style: italic;
+  }
+  .header-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--verde-lt);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+
+  /* ─── HERO BAND ───────────────────────────────────── */
+  .hero {
+    background: linear-gradient(135deg, var(--verde) 0%, #1f9186 60%, var(--verde-lt) 100%);
+    padding: 44px 40px 40px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .hero-title {
+    font-family: var(--font-display);
+    font-size: 13px;
+    color: rgba(255,255,255,.7);
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .hero-h1 {
+    font-family: var(--font-display);
+    font-size: 36px;
+    color: var(--white);
+    font-weight: 400;
+    line-height: 1.1;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  /* ─── KPI CARDS ───────────────────────────────────── */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    position: relative;
+  }
+  .kpi-card {
+    background: rgba(255,255,255,.12);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,.22);
+    border-radius: var(--r-md);
+    padding: 22px 24px;
+    color: var(--white);
+  }
+  .kpi-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,.65);
+    margin-bottom: 8px;
+  }
+  .kpi-val {
+    font-family: var(--font-display);
+    font-size: 42px;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--white);
+    margin-bottom: 4px;
+  }
+  .kpi-sub {
+    font-size: 12px;
+    color: rgba(255,255,255,.55);
+  }
+
+  /* ─── MAIN LAYOUT ─────────────────────────────────── */
+  main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 36px 40px 64px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--verde);
+    margin-bottom: 4px;
+  }
+  .section-title {
+    font-family: var(--font-display);
+    font-size: 22px;
+    color: var(--ink);
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+
+  /* ─── CHART ROW ───────────────────────────────────── */
+  .chart-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  .card {
+    background: var(--white);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow);
+    padding: 28px 28px 24px;
+    border: 1px solid var(--rule);
+  }
+  .card-title {
+    font-weight: 600;
+    font-size: 13px;
+    color: var(--ink);
+    margin-bottom: 4px;
+    letter-spacing: .01em;
+  }
+  .card-sub {
+    font-size: 12px;
+    color: var(--ink-lt);
+    margin-bottom: 20px;
+  }
+  .chart-wrap {
+    position: relative;
+    height: 220px;
+  }
+
+  /* ─── LEGEND ─────────────────────────────────────── */
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 18px;
+    margin-top: 14px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--ink-mid);
+  }
+  .legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  /* ─── REALIZED + TOP PERFORMERS ───────────────────── */
+  .insights-row {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 20px;
+    margin-bottom: 32px;
+  }
+  .realized-card {
+    background: var(--verde);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow-lg);
+    padding: 28px;
+    color: var(--white);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .realized-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--verde-lt);
+    margin-bottom: 8px;
+  }
+  .realized-title {
+    font-family: var(--font-display);
+    font-size: 20px;
+    line-height: 1.3;
+    margin-bottom: 16px;
+  }
+  .realized-stat {
+    font-family: var(--font-display);
+    font-size: 56px;
+    line-height: 1;
+    margin-bottom: 2px;
+  }
+  .realized-stat span {
+    font-size: 22px;
+    opacity: .7;
+    font-style: italic;
+  }
+  .realized-desc {
+    font-size: 13px;
+    color: rgba(255,255,255,.7);
+    line-height: 1.5;
+    margin-top: 14px;
+  }
+
+  .performers-card {
+    background: var(--white);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow);
+    padding: 28px;
+    border: 1px solid var(--rule);
+  }
+  .performer-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .performer-row:last-child { border-bottom: none; }
+  .perf-rank {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 18px;
+    color: var(--ink-lt);
+    width: 22px;
+    flex-shrink: 0;
+    text-align: center;
+  }
+  .perf-info { flex: 1; min-width: 0; }
+  .perf-name {
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--ink);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .perf-detail {
+    font-size: 11.5px;
+    color: var(--ink-lt);
+    margin-top: 1px;
+  }
+  .perf-bar-wrap {
+    flex: 1;
+    max-width: 160px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .perf-bar-bg {
+    flex: 1;
+    height: 6px;
+    background: var(--rule);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .perf-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--verde) 0%, var(--verde-lt) 100%);
+    border-radius: 3px;
+    transition: width .6s ease;
+  }
+  .perf-mult {
+    font-family: var(--font-display);
+    font-size: 18px;
+    color: var(--verde);
+    font-weight: 400;
+    white-space: nowrap;
+    min-width: 42px;
+    text-align: right;
+  }
+
+  /* ─── TABLE ───────────────────────────────────────── */
+  .table-wrap {
+    background: var(--white);
+    border-radius: var(--r-lg);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--rule);
+    overflow: hidden;
+  }
+  .table-header {
+    padding: 22px 28px 0;
+    border-bottom: 1px solid var(--rule);
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    padding-bottom: 18px;
+  }
+  .table-filter-row {
+    display: flex;
+    gap: 8px;
+  }
+  .filter-btn {
+    font-family: var(--font-body);
+    font-size: 12px;
+    font-weight: 500;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1px solid var(--rule);
+    background: var(--white);
+    color: var(--ink-mid);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .filter-btn:hover { border-color: var(--verde); color: var(--verde); }
+  .filter-btn.active { background: var(--verde); color: var(--white); border-color: var(--verde); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  thead th {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--ink-lt);
+    padding: 12px 16px;
+    text-align: left;
+    background: var(--paper);
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+  }
+  thead th:first-child { padding-left: 28px; }
+  thead th:last-child  { padding-right: 28px; text-align: right; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--rule);
+    transition: background .12s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--paper); }
+
+  td {
+    padding: 11px 16px;
+    font-size: 13px;
+    color: var(--ink);
+    vertical-align: middle;
+  }
+  td:first-child { padding-left: 28px; font-weight: 500; }
+  td:last-child  { padding-right: 28px; text-align: right; font-feature-settings: "tnum"; }
+
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 20px;
+    white-space: nowrap;
+  }
+  .status-pill::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .pill-current    { background: #e6f4f2; color: var(--verde);  }
+  .pill-current::before { background: var(--verde); }
+  .pill-monitor    { background: #f0f4f5; color: var(--ink-mid); }
+  .pill-monitor::before { background: var(--ink-lt); }
+  .pill-realized   { background: var(--gold-lt); color: #b07a14; }
+  .pill-realized::before { background: var(--gold); }
+
+  .focus-tag {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 500;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: var(--verde-xs);
+    color: var(--verde-dk);
+    margin: 1px 2px 1px 0;
+    white-space: nowrap;
+  }
+  .focus-tag.other { background: #f0f4f5; color: var(--ink-mid); }
+
+  .capital-val {
+    font-feature-settings: "tnum";
+    color: var(--ink);
+  }
+
+  /* ─── FOOTER ─────────────────────────────────────── */
+  footer {
+    text-align: center;
+    padding: 28px 40px;
+    font-size: 11px;
+    color: var(--ink-lt);
+    border-top: 1px solid var(--rule);
+    background: var(--white);
+  }
+  footer strong { color: var(--verde); }
+
+  /* ─── PASSWORD GATE ──────────────────────────────── */
+  #gate {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: var(--verde-dk);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  #gate::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.04'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+  }
+  .gate-box {
+    position: relative;
+    background: rgba(255,255,255,.07);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: 20px;
+    padding: 52px 48px 44px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+    animation: gateIn .5s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes gateIn {
+    from { opacity: 0; transform: translateY(24px) scale(.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+  .gate-logo {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 36px;
+    color: var(--white);
+    margin-bottom: 6px;
+    letter-spacing: -0.5px;
+  }
+  .gate-eyebrow {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: var(--verde-lt);
+    margin-bottom: 28px;
+  }
+  .gate-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: rgba(255,255,255,.6);
+    text-align: left;
+    margin-bottom: 8px;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .gate-input-wrap {
+    position: relative;
+    margin-bottom: 16px;
+  }
+  .gate-input {
+    width: 100%;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 10px;
+    padding: 13px 44px 13px 16px;
+    font-family: var(--font-body);
+    font-size: 15px;
+    color: var(--white);
+    letter-spacing: .06em;
+    outline: none;
+    transition: border-color .2s, background .2s;
+  }
+  .gate-input::placeholder { color: rgba(255,255,255,.3); letter-spacing: .04em; }
+  .gate-input:focus {
+    border-color: var(--verde-lt);
+    background: rgba(255,255,255,.14);
+  }
+  .gate-toggle {
+    position: absolute;
+    right: 13px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none;
+    cursor: pointer;
+    color: rgba(255,255,255,.45);
+    font-size: 16px;
+    padding: 2px;
+    transition: color .15s;
+  }
+  .gate-toggle:hover { color: rgba(255,255,255,.8); }
+  .gate-btn {
+    width: 100%;
+    background: var(--verde-lt);
+    color: var(--verde-dk);
+    border: none;
+    border-radius: 10px;
+    padding: 13px;
+    font-family: var(--font-body);
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: .04em;
+    cursor: pointer;
+    transition: background .15s, transform .1s;
+    margin-top: 4px;
+  }
+  .gate-btn:hover { background: #9ddbd7; }
+  .gate-btn:active { transform: scale(.98); }
+  .gate-error {
+    font-size: 12px;
+    color: #f28b82;
+    margin-top: 10px;
+    min-height: 18px;
+    opacity: 0;
+    transition: opacity .2s;
+  }
+  .gate-error.visible { opacity: 1; }
+  #gate.unlocking {
+    animation: gateFade .45s ease forwards;
+  }
+  @keyframes gateFade {
+    to { opacity: 0; pointer-events: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="gate">
+  <div class="gate-box">
+    <div class="gate-logo">strada</div>
+    <div class="gate-eyebrow">Portfolio Dashboard · December 2025</div>
+    <div class="gate-label">Access Password</div>
+    <div class="gate-input-wrap">
+      <input class="gate-input" id="gateInput" type="password" placeholder="Enter password" autocomplete="off" />
+      <button class="gate-toggle" id="gateToggle" onclick="toggleVis()" title="Show/hide">👁</button>
+    </div>
+    <button class="gate-btn" onclick="checkPassword()">Unlock Dashboard</button>
+    <div class="gate-error" id="gateError">Incorrect password. Please try again.</div>
+  </div>
+</div>
+
+<script>
+  document.getElementById('gateInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') checkPassword();
+  });
+  function checkPassword() {
+    const val = document.getElementById('gateInput').value;
+    const err = document.getElementById('gateError');
+    if (val === 'CCF2026') {
+      const gate = document.getElementById('gate');
+      gate.classList.add('unlocking');
+      setTimeout(() => gate.remove(), 450);
+    } else {
+      err.classList.add('visible');
+      document.getElementById('gateInput').value = '';
+      setTimeout(() => err.classList.remove('visible'), 2800);
+    }
+  }
+  function toggleVis() {
+    const inp = document.getElementById('gateInput');
+    inp.type = inp.type === 'password' ? 'text' : 'password';
+  }
+</script>
+
+<header>
+  <div class="logo">strada</div>
+  <div class="header-label">Strategic Investments Portfolio</div>
+</header>
+
+<div class="hero">
+  <div class="hero-title">Education to Workforce</div>
+  <div class="hero-h1">Portfolio Overview<br><em style="font-size:22px;opacity:.7">as of December 2025</em></div>
+  <div class="kpi-row">
+    <div class="kpi-card">
+      <div class="kpi-label">Total Capital Deployed</div>
+      <div class="kpi-val">$94.7M</div>
+      <div class="kpi-sub">Across all stages &amp; pools</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Total Investments</div>
+      <div class="kpi-val">68</div>
+      <div class="kpi-sub">Companies &amp; funds</div>
+    </div>
+    <div class="kpi-card">
+      <div class="kpi-label">Focus Areas Covered</div>
+      <div class="kpi-val">5</div>
+      <div class="kpi-sub">Affordability · Clear Outcomes · Quality Coaching · Work-Based Learning · Employer Alignment</div>
+    </div>
+  </div>
+</div>
+
+<main>
+
+  <!-- CHARTS ROW -->
+  <div class="chart-row">
+    <div class="card">
+      <div class="card-title">Investments by Stage</div>
+      <div class="card-sub">Count of portfolio companies across investment stages</div>
+      <div class="chart-wrap">
+        <canvas id="stageCountChart"></canvas>
+      </div>
+      <div class="legend" id="stageCountLegend"></div>
+    </div>
+    <div class="card">
+      <div class="card-title">Capital Deployed by Stage</div>
+      <div class="card-sub">Dollar value allocated across investment stages</div>
+      <div class="chart-wrap">
+        <canvas id="stageCapChart"></canvas>
+      </div>
+      <div class="legend" id="stageCapLegend"></div>
+    </div>
+  </div>
+
+  <!-- REALIZED + TOP PERFORMERS -->
+  <div class="insights-row">
+    <div class="realized-card">
+      <div>
+        <div class="realized-eyebrow">Fully Realized Investments</div>
+        <div class="realized-title">Capital Return Analysis</div>
+      </div>
+      <div>
+        <div class="realized-stat">14 <span>of 18</span></div>
+        <div style="font-size:14px;color:rgba(255,255,255,.8);margin-top:6px;">fully realized investments<br>returned proceeds to Strada</div>
+        <div class="realized-desc">
+          Of the 18 fully realized positions, <strong style="color:var(--white)">77.8%</strong> returned capital. Four investments were written to zero. The 10 investments that returned capital above cost generated proceeds totalling over <strong style="color:var(--white)">$57M</strong> against approximately <strong style="color:var(--white)">$27M</strong> deployed.
+        </div>
+      </div>
+    </div>
+
+    <div class="performers-card">
+      <div class="section-label">Fully Realized</div>
+      <div class="section-title" style="margin-bottom:4px;">Top 5 Performing Exits</div>
+      <div style="font-size:12px;color:var(--ink-lt);margin-bottom:16px;">Ranked by return multiple (Total Value ÷ Capital Deployed)</div>
+
+      <div class="performer-row">
+        <div class="perf-rank">1</div>
+        <div class="perf-info">
+          <div class="perf-name">Graduation Alliance</div>
+          <div class="perf-detail">$1.3M deployed → $5.0M returned · Quality Coaching</div>
+        </div>
+        <div class="perf-bar-wrap">
+          <div class="perf-bar-bg"><div class="perf-bar-fill" style="width:100%"></div></div>
+        </div>
+        <div class="perf-mult">3.85×</div>
+      </div>
+
+      <div class="performer-row">
+        <div class="perf-rank">2</div>
+        <div class="perf-info">
+          <div class="perf-name">Credly</div>
+          <div class="perf-detail">$750K deployed → $2.8M returned · Clear Outcomes</div>
+        </div>
+        <div class="perf-bar-wrap">
+          <div class="perf-bar-bg"><div class="perf-bar-fill" style="width:98.7%"></div></div>
+        </div>
+        <div class="perf-mult">3.80×</div>
+      </div>
+
+      <div class="performer-row">
+        <div class="perf-rank">3</div>
+        <div class="perf-info">
+          <div class="perf-name">Nepris</div>
+          <div class="perf-detail">$750K deployed → $2.0M returned · Employer Alignment</div>
+        </div>
+        <div class="perf-bar-wrap">
+          <div class="perf-bar-bg"><div class="perf-bar-fill" style="width:68.3%"></div></div>
+        </div>
+        <div class="perf-mult">2.63×</div>
+      </div>
+
+      <div class="performer-row">
+        <div class="perf-rank">4</div>
+        <div class="perf-info">
+          <div class="perf-name">Revature</div>
+          <div class="perf-detail">$5.2M deployed → $11.5M returned · Work-Based Learning</div>
+        </div>
+        <div class="perf-bar-wrap">
+          <div class="perf-bar-bg"><div class="perf-bar-fill" style="width:56.9%"></div></div>
+        </div>
+        <div class="perf-mult">2.19×</div>
+      </div>
+
+      <div class="performer-row">
+        <div class="perf-rank">5</div>
+        <div class="perf-info">
+          <div class="perf-name">Genuent</div>
+          <div class="perf-detail">$17.1M deployed → $32.4M returned · Employer Alignment</div>
+        </div>
+        <div class="perf-bar-wrap">
+          <div class="perf-bar-bg"><div class="perf-bar-fill" style="width:49.1%"></div></div>
+        </div>
+        <div class="perf-mult">1.89×</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FULL PORTFOLIO TABLE -->
+  <div class="section-label">All Investments</div>
+  <div class="section-title">Complete Portfolio — Reverse Chronological</div>
+
+  <div class="table-wrap">
+    <div class="table-header">
+      <div style="font-size:13px;color:var(--ink-mid)">Showing <strong id="rowCount" style="color:var(--ink)">68</strong> investments</div>
+      <div class="table-filter-row">
+        <button class="filter-btn active" onclick="filterTable('all',this)">All</button>
+        <button class="filter-btn" onclick="filterTable('Current Investment',this)">Current</button>
+        <button class="filter-btn" onclick="filterTable('Not Monitoring',this)">Active</button>
+        <button class="filter-btn" onclick="filterTable('Fully Realized Investment',this)">Realized</button>
+      </div>
+    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Company</th>
+          <th>Year</th>
+          <th>Focus Area</th>
+          <th>Stage</th>
+          <th>Capital Deployed</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="portfolioTable"></tbody>
+    </table>
+  </div>
+
+</main>
+
+<footer>
+  <strong>Strada Education Foundation</strong> &nbsp;·&nbsp; Strategic Investments Portfolio &nbsp;·&nbsp; Data as of December 2025 &nbsp;·&nbsp; Managed in partnership with Mission Driven Finance
+</footer>
+
+<script>
+// ── DATA ──────────────────────────────────────────────
+const data = [
+  ["Skillmaker","9/2/2025","Employer Alignment","Venture","$250,000","Current Investment"],
+  ["Classet","8/5/2025","Employer Alignment","Venture","$250,000","Current Investment"],
+  ["Summer","5/28/2025","Affordability","Venture","$1,000,000","Current Investment"],
+  ["Opus Training","4/8/2025","Employer Alignment","Venture","$1,500,000","Current Investment"],
+  ["Sol Health","11/4/2024","Work-Based Learning","Venture","$250,000","Current Investment"],
+  ["SchooLinks","9/27/2024","Quality Coaching","Venture","$1,999,990","Not Monitoring"],
+  ["Skillful.ly","7/15/2024","Employer Alignment","Venture","$250,000","Current Investment"],
+  ["Techstars Central LLC","7/10/2024","Employer Alignment","Venture","$1,900,000","Not Monitoring"],
+  ["Doowii","5/20/2024","Clear Outcomes","Venture","$250,000","Current Investment"],
+  ["Rize Education","8/30/2023","Affordability","Venture","$1,999,994","Current Investment"],
+  ["Pursuit PBC","8/3/2023","Employer Alignment","Venture","$250,000","Current Investment"],
+  ["Julius","6/9/2023","Employer Alignment","Venture","$250,000","Current Investment"],
+  ["Accredible","2/9/2023","Clear Outcomes","Venture","$1,000,000","Current Investment"],
+  ["Plum.io","2/7/2023","Employer Alignment","Venture","$500,000","Not Monitoring"],
+  ["Daivergent","12/22/2022","Affordability","Venture","$584,000","Current Investment"],
+  ["Purpose Built Ventures Studio","10/31/2022","Other","Venture","$1,000,000","Not Monitoring"],
+  ["Mainstay","10/12/2022","Quality Coaching","Venture","$1,000,000","Not Monitoring"],
+  ["Clusiv","9/7/2022","Affordability","Venture","$200,000","Fully Realized Investment"],
+  ["CampusReel","8/11/2022","Other","Venture","$250,001","Current Investment"],
+  ["Upright Education","6/16/2022","Employer Alignment","Venture","$750,000","Current Investment"],
+  ["EdVisorly","6/2/2022","Affordability","Venture","$400,000","Current Investment"],
+  ["The Mom Project","3/31/2022","Employer Alignment","Late-stage co-invest","$1,000,000","Not Monitoring"],
+  ["Honest Jobs","2/7/2022","Employer Alignment","Venture","$125,000","Not Monitoring"],
+  ["Pathstream","7/28/2021","Affordability","Venture","$1,999,992","Current Investment"],
+  ["Beem","4/30/2021","Other","Venture","$400,000","Current Investment"],
+  ["XAP (Formerly Sokanu)","3/9/2021","Quality Coaching","Venture","—","Fully Realized Investment"],
+  ["Interplay Learning","2/16/2021","Work-Based Learning; Employer Alignment","Venture","$1,349,999","Not Monitoring"],
+  ["Cinematic Health Ed.","7/17/2020","Employer Alignment","Venture","$250,001","Current Investment"],
+  ["Clasp Fund I","7/9/2020","Affordability","Opportunistic","$1,000,000","Current Investment"],
+  ["EduNav","3/19/2020","Quality Coaching; Affordability","Venture","$750,000","Fully Realized Investment"],
+  ["Graduation Alliance – KKR","2/28/2020","Quality Coaching","Late-stage co-invest","$10,000,000","Current Investment"],
+  ["Orijin","2/28/2020","Affordability","Venture","$913,444","Current Investment"],
+  ["Nepris","2/24/2020","Employer Alignment","Venture","$749,999","Fully Realized Investment"],
+  ["Risepoint","12/23/2019","Other","Late-stage co-invest","$10,000,000","Not Monitoring"],
+  ["Pronto","11/26/2019","Other","Venture","$499,995","Not Monitoring"],
+  ["Clasp","10/25/2019","Affordability","Venture","$434,255","Current Investment"],
+  ["Quantic","10/25/2019","Other","Venture","$500,000","Fully Realized Investment"],
+  ["APL nextED","10/1/2019","Other","Venture","$350,000","Not Monitoring"],
+  ["CareAcademy","10/1/2019","Affordability; Employer Alignment","Venture","$400,000","Current Investment"],
+  ["Riipen","9/30/2019","Work-Based Learning","Venture","$500,000","Current Investment"],
+  ["Mentor Collective","9/9/2019","Quality Coaching","Venture","$250,000","Current Investment"],
+  ["Kenzie Academy","6/14/2019","Work-Based Learning","Venture","$750,000","Fully Realized Investment"],
+  ["SV Academy","5/10/2019","Employer Alignment","Venture","$100,000","Not Monitoring"],
+  ["Skillist","4/26/2019","Employer Alignment","Venture","$150,000","Fully Realized Investment"],
+  ["Credly","3/29/2019","Clear Outcomes","Venture","$749,999","Fully Realized Investment"],
+  ["Upswing","3/20/2019","Quality Coaching","Venture","$500,000","Current Investment"],
+  ["Beam","2/14/2019","Affordability","Venture","$635,000","Current Investment"],
+  ["Brighthive","1/25/2019","Clear Outcomes","Venture","$949,997","Current Investment"],
+  ["Purdue BAB ISA Pool 2","11/8/2018","Affordability","Opportunistic","$1,000,000","Not Monitoring"],
+  ["Cell-Ed","6/19/2018","Employer Alignment","Venture","$300,000","Current Investment"],
+  ["Genuent","6/1/2018","Employer Alignment","Late-stage co-invest","$17,137,126","Fully Realized Investment"],
+  ["Raise Labs","5/14/2018","Affordability","Venture","$499,999","Fully Realized Investment"],
+  ["Everspring","4/19/2018","Other","Opportunistic","$5,111,987","Not Monitoring"],
+  ["Uconnect","2/5/2018","Quality Coaching","Venture","$899,998","Current Investment"],
+  ["ACUE","5/23/2017","Other","Venture","$1,000,000","Current Investment"],
+  ["Rali","1/31/2017","Other","Venture","$1,000,000","Not Monitoring"],
+  ["Authess","1/30/2017","Other","Venture","$860,172","Fully Realized Investment"],
+  ["Whiteboard Advisors","1/6/2017","Other","Venture","$900,000","Fully Realized Investment"],
+  ["Purdue BAB ISA Pool 1","9/30/2016","Affordability","Opportunistic","$964,708","Not Monitoring"],
+  ["ReUp Education","8/8/2016","Quality Coaching","Venture","$439,667","Not Monitoring"],
+  ["BridgeEdU","7/12/2016","Affordability","Venture","$750,000","Fully Realized Investment"],
+  ["Quad Learning","4/15/2016","Other","Venture","$800,000","Fully Realized Investment"],
+  ["Sokanu","3/18/2016","Quality Coaching","Venture","$500,000","Fully Realized Investment"],
+  ["Plexuss","2/22/2016","Other","Venture","$2,355,441","Not Monitoring"],
+  ["Revature","1/1/2016","Work-Based Learning; Employer Alignment","Late-stage co-invest","$5,242,499","Fully Realized Investment"],
+  ["Graduation Alliance","6/26/2015","Quality Coaching","Late-stage co-invest","$1,306,774","Fully Realized Investment"],
+  ["Copley Retention Systems","6/5/2015","Other","Venture","$583,400","Fully Realized Investment"],
+  ["Jefferson Ed. Holdings","10/24/2014","Other","Opportunistic","$1,940,838","Not Monitoring"],
+];
+
+const focusColors = {
+  'Employer Alignment': '#d4f0ee',
+  'Affordability': '#ddeef8',
+  'Quality Coaching': '#f0eafa',
+  'Work-Based Learning': '#faefd4',
+  'Clear Outcomes': '#d4edf0',
+  'Other': '#f0f4f5',
+};
+const focusTextColors = {
+  'Employer Alignment': '#1b7a6e',
+  'Affordability': '#1a5f8a',
+  'Quality Coaching': '#6340a0',
+  'Work-Based Learning': '#8a6020',
+  'Clear Outcomes': '#1a6a7a',
+  'Other': '#4a5f6b',
+};
+
+function formatFocus(raw) {
+  return raw.split(';').map(f => {
+    f = f.trim();
+    const bg = focusColors[f] || focusColors['Other'];
+    const tc = focusTextColors[f] || focusTextColors['Other'];
+    return `<span class="focus-tag" style="background:${bg};color:${tc}">${f}</span>`;
+  }).join('');
+}
+
+function statusPill(s) {
+  if (s === 'Current Investment')
+    return `<span class="status-pill pill-current">Active</span>`;
+  if (s === 'Not Monitoring')
+    return `<span class="status-pill pill-monitor">Active</span>`;
+  return `<span class="status-pill pill-realized">Realized</span>`;
+}
+
+function getYear(dateStr) {
+  return new Date(dateStr).getFullYear();
+}
+
+let currentFilter = 'all';
+
+function renderTable(filter) {
+  const tbody = document.getElementById('portfolioTable');
+  const filtered = filter === 'all' ? data : data.filter(r => r[5] === filter);
+  document.getElementById('rowCount').textContent = filtered.length;
+  tbody.innerHTML = filtered.map(r => {
+    const [name, date, focus, stage, cap, status] = r;
+    return `<tr data-status="${status}">
+      <td>${name}</td>
+      <td>${getYear(date)}</td>
+      <td>${formatFocus(focus)}</td>
+      <td style="color:var(--ink-mid)">${stage}</td>
+      <td class="capital-val">${cap}</td>
+      <td>${statusPill(status)}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterTable(filter, btn) {
+  currentFilter = filter;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTable(filter);
+}
+
+renderTable('all');
+
+// ── CHARTS ────────────────────────────────────────────
+const verde    = '#1b7a6e';
+const verdeXS  = '#d4f0ee';
+const verdeLt  = '#7ecfca';
+const gold     = '#e8a94a';
+const slate    = '#8fa4ae';
+const navyBlue = '#2e6b9a';
+const purple   = '#7c5cbf';
+
+// Stage COUNT chart (donut)
+const stageLabels = ['Venture', 'Late-Stage Co-Invest', 'Opportunistic'];
+const stageCounts = [57, 6, 5];
+const stageColors = [verde, verdeLt, gold];
+
+const ctxStage = document.getElementById('stageCountChart').getContext('2d');
+new Chart(ctxStage, {
+  type: 'doughnut',
+  data: {
+    labels: stageLabels,
+    datasets: [{
+      data: stageCounts,
+      backgroundColor: stageColors,
+      borderWidth: 0,
+      hoverOffset: 6,
+    }]
+  },
+  options: {
+    cutout: '62%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.label}: ${ctx.parsed} investments`
+        }
+      }
+    },
+    animation: { animateRotate: true, duration: 900 }
+  }
+});
+
+const stLeg = document.getElementById('stageCountLegend');
+stageLabels.forEach((l, i) => {
+  stLeg.innerHTML += `<div class="legend-item"><div class="legend-dot" style="background:${stageColors[i]}"></div>${l} <strong style="color:var(--ink);margin-left:4px">${stageCounts[i]}</strong></div>`;
+});
+
+// Stage by CAPITAL chart (donut)
+const stageCapLabels = ['Venture', 'Late-Stage Co-Invest', 'Opportunistic'];
+const stageCapVals   = [40.03, 44.69, 10.02];
+const stageCapColors = [verde, verdeLt, gold];
+
+const ctxStageCap = document.getElementById('stageCapChart').getContext('2d');
+new Chart(ctxStageCap, {
+  type: 'doughnut',
+  data: {
+    labels: stageCapLabels,
+    datasets: [{
+      data: stageCapVals,
+      backgroundColor: stageCapColors,
+      borderWidth: 0,
+      hoverOffset: 6,
+    }]
+  },
+  options: {
+    cutout: '62%',
+    plugins: {
+      legend: { display: false },
+      tooltip: {
+        callbacks: {
+          label: ctx => ` ${ctx.label}: $${ctx.parsed.toFixed(1)}M`
+        }
+      }
+    },
+    animation: { animateRotate: true, duration: 900 }
+  }
+});
+
+const scCapLeg = document.getElementById('stageCapLegend');
+stageCapLabels.forEach((l, i) => {
+  scCapLeg.innerHTML += `<div class="legend-item"><div class="legend-dot" style="background:${stageCapColors[i]}"></div>${l} <strong style="color:var(--ink);margin-left:4px">$${stageCapVals[i]}M</strong></div>`;
+});
+</script>
+</body>
+</html>
